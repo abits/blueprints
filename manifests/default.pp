@@ -40,7 +40,7 @@ file { "/etc/php5/conf.d/xxx-custom.ini":
   owner => root,
   group => root,
   mode => 644,
-  source => ["puppet:///vagrant/files/php.ini"],
+  source => ["/vagrant/files/php.ini"],
   notify => Service["httpd"],
   require => Class['apache::mod::php']
 }
