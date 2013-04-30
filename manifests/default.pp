@@ -27,6 +27,7 @@ package { [php5-mysql,
            sudo, 
            phpmyadmin,
            curl,
+           libsqlite3-dev,
            git]:
   ensure  => present,
   require => [ Exec['apt_update'], 
@@ -104,11 +105,22 @@ exec {"pear install phpunit":
   require => Exec['pear update-channels']
 }
 exec {"pear install drush":
-  command => "/usr/bin/pear install --alldeps -s pear.drush.org/drush",
+  command => '/usr/bin/pear install --alldeps -s pear.drush.org/drush',
   creates => '/usr/bin/drush',
   require => Exec['pear update-channels']
 }
 exec {"pear install Console_Table":
   command => "/usr/bin/pear install --alldeps -s --force Console_Table",
   require => Exec['pear update-channels']
+}
+
+package { 'mailcatcher':
+    ensure   => 'installed',
+    provider => 'gem',
+    require => Package['libsqlite3-dev']
+}
+exec {'run_mailcatcher':
+    command => '/usr/local/bin/mailcatcher --http-ip 0.0.0.0',
+    require => Package['mailcatcher']
+
 }
