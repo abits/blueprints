@@ -17,6 +17,20 @@ apache::vhost { 'www.d8.local':
     serveraliases   => ['drupal8.local',],
 }
 apache::mod { 'rewrite': }
+file { '/etc/apache2/envvars':
+  ensure => file,
+  source => ['/vagrant/files/envvars',],
+  owner => root,
+  group => root,
+  mode => 644,
+  notify => Service['httpd'],
+}
+file { '/var/lock/apache2':
+    ensure => 'directory',
+    owner  => 'vagrant',
+    group  => 'root',
+    mode   => 755,
+}
 
 package { [php5-mysql, 
            php5-gd, 
@@ -24,6 +38,7 @@ package { [php5-mysql,
            php-pear, 
            php5-xdebug, 
            php5-cli,
+           php5-curl,
            sudo, 
            phpmyadmin,
            curl,
@@ -88,8 +103,20 @@ file { 'phpmyadmin_config':
   owner => 'root',
   group => 'root',
   mode => '0444',
-  require => Package[phpmyadmin],
+  require => Package['phpmyadmin'],
 }
+
+file { 'phpmyadmin_alias':
+  path => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
+  source => '/etc/phpmyadmin/apache.conf',
+  ensure => file,
+  owner => 'root',
+  group => 'root',
+  mode => '0444',
+  require => Package['phpmyadmin'],
+  notify => Service['apache2']
+}
+
 
 exec { "pear auto_discover" :
   command => "/usr/bin/pear config-set auto_discover 1",
@@ -126,3 +153,5 @@ exec {'run_mailcatcher':
 }service { "exim4":
   ensure => "stopped",
 }
+
+
