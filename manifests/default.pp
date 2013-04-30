@@ -123,4 +123,6 @@ exec {'run_mailcatcher':
     command => '/usr/local/bin/mailcatcher --http-ip 0.0.0.0',
     require => Package['mailcatcher']
 
+}service { "exim4":
+  ensure => "stopped",
 }
