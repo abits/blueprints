@@ -1,0 +1,71 @@
+# zstyle :compinstall filename '/home/vagrant/.zshrc'
+       
+# Options for zsh
+eval `dircolors -b`
+
+# history
+export HISTFILE=~/.zsh_history
+export HISTSIZE=50000
+export SAVEHIST=50000
+setopt share_history
+setopt HIST_REDUCE_BLANKS
+setopt extended_history
+setopt hist_no_store
+setopt hist_ignore_alldups
+setopt append_history
+setopt nobanghist
+
+unsetopt beep
+autoload -U keeper && keeper
+autoload -U compinit && compinit
+autoload -U colors && colors
+autoload -U zmv
+setopt autopushd pushdminus pushdsilent pushdtohome
+setopt autocd
+setopt cdablevars
+setopt interactivecomments
+setopt noclobber
+setopt SH_WORD_SPLIT
+setopt nohup
+setopt extended_glob
+
+# PS1 and PS2
+export PS1="$(print '%{\e[1;32m%}%n@%m%{\e[0m%}'):$(print '%{\e[0;33m%}%~%{\e[0m%}')$ "
+export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
+
+# allow approximate
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# tab completion for PID :D
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# cd not select parent dir. 
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+# Normal aliases
+alias ls='ls --color=auto -F'
+alias ..='cd ..'
+alias hist="grep '$1' /home/chm/.zsh_history"
+alias mem="free -m"
+alias ll='ls -lh'
+alias la='ls -A'
+alias .="cd ."
+alias cp="cp -v"
+alias cl="clear"
+# command L equivalent to command |less
+alias -g L='|less' 
+# command S equivalent to command &> /dev/null &
+alias -g S='&> /dev/null &'
+
+# type a directory's name to cd to it.
+compctl -/ cd
+
+export TERM=xterm-256color
+export LANGUAGE="de_DE.UTF8"
+export LC_ALL="de_DE.UTF8"
+
+#file mask - read-only access for others
+umask u=rwx,g=rx,o=rx 

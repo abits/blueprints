@@ -45,7 +45,9 @@ if (is_readable('/etc/phpmyadmin/config-db.php')) {
 /* Configure according to dbconfig-common if enabled */
 if (!empty($dbname)) {
     /* Authentication type */
-    $cfg['Servers'][$i]['auth_type'] = 'cookie';
+    $cfg['Servers'][$i]['auth_type'] = 'config';
+    $cfg['Servers'][$i]['user'] = 'root';
+    $cfg['Servers'][$i]['password'] = 'password';
     /* Server parameters */
     if (empty($dbserver)) $dbserver = 'localhost';
     $cfg['Servers'][$i]['host'] = $dbserver;
@@ -104,8 +106,7 @@ if (!empty($dbname)) {
 // $cfg['Servers'][$i]['designer_coords'] = 'pma_designer_coords';
 /* Uncomment the following to enable logging in to passwordless accounts,
  * after taking note of the associated security risks. */
-$cfg['Servers'][$i]['AllowNoPassword'] = TRUE;
-
+$cfg['Servers'][$i]['AllowRoot'] = TRUE;
 /*
  * End of servers configuration
  */
