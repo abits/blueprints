@@ -83,7 +83,7 @@ package { [php5-mysql,
 class { 'mysql': }
 class { 'mysql::server':
   config_hash => { 
-  'root_password' => 'password',
+    root_password => 'password',
   }
 }
 mysql::db { 'drupal':
@@ -91,7 +91,6 @@ mysql::db { 'drupal':
   password => 'drupal',
   host     => 'localhost',
   grant    => ['all'],
-  charset => 'utf8',
 }
 
 file { '/etc/php5/conf.d/xxx-custom.ini':
