@@ -17,8 +17,8 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./www", "/srv/www/drupal"
 
   config.vm.provision :puppet do |puppet|
-      puppet.module_path = "modules"
-      puppet.manifests_path = "manifests"
+      puppet.module_path = "puppet/modules"
+      puppet.manifests_path = "puppet/manifests"
       puppet.manifest_file = "default.pp"
       puppet.options="--verbose"
   end
