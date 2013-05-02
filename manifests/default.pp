@@ -191,7 +191,7 @@ exec {'pear install phpunit':
   require => Exec['pear update-channels']
 }
 exec {'pear install drush':
-  command => '/usr/bin/pear install --alldeps -s pear.drush.org/drush',
+  command => '/usr/bin/pear install --alldeps -s pear.drush.org/drush-6.0.0',
   creates => '/usr/bin/drush',
   require => Exec['pear update-channels']
 }
