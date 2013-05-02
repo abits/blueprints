@@ -92,6 +92,7 @@ class { 'mysql': }
 class { 'mysql::server':
   config_hash => { 
     root_password => 'password',
+    bind_address => '0.0.0.0'
   }
 }
 mysql::db { 'drupal':
