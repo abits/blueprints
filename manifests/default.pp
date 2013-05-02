@@ -12,6 +12,7 @@ apache::vhost { 'www.d8.dev.local':
     priority        => '10',
     vhost_name      => '*',
     port            => '80',
+    override        => 'All',
     docroot         => '/srv/www/drupal',
     serveradmin     => 'admin@localhost',
     serveraliases   => ['d8.dev.local',],
@@ -73,7 +74,14 @@ package { [php5-mysql,
            curl,
            libsqlite3-dev,
            git,
-           zsh]:
+           subversion,
+           zsh,
+           emacs23-nox,   
+           vim,
+           links,
+           python-pip,
+           python-virtualenv,
+           python-dev]:
   ensure  => present,
   require => [ Exec['apt_update'], 
                Class['apache::mod::php'] ],
@@ -198,13 +206,9 @@ package { 'mailcatcher':
     require => Package['libsqlite3-dev']
 }
 exec {'run_mailcatcher':
-    command => '/usr/local/bin/mailcatcher --http-ip 0.0.0.0',
+    command => '/usr/local/bin/mailcatcher --ip 0.0.0.0',
     require => Package['mailcatcher']
 }
-service { "exim4":
-  ensure => "stopped",
-}
-
 exec {'download_webgrind':
   cwd     => '/root',
   command => 'curl -O http://webgrind.googlecode.com/files/webgrind-release-1.0.zip',
@@ -226,5 +230,13 @@ exec {'install_webgrind':
   creates => '/srv/www/webgrind',
   require => Exec['deflate_webgrind'],  
 }
+exec {'install_fabric':
+  cwd     => '/root',
+  command => '/usr/bin/pip install fabric',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/usr/local/bin/fab',
+  require => Package['python-pip'],  
+}
+
 
 

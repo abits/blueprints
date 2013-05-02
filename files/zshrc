@@ -48,7 +48,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 # Normal aliases
 alias ls='ls --color=auto -F'
 alias ..='cd ..'
-alias hist="grep '$1' /home/chm/.zsh_history"
+alias hist="grep '$1' ~/.zsh_history"
 alias mem="free -m"
 alias ll='ls -lh'
 alias la='ls -A'
