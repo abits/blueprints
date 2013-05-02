@@ -53,12 +53,12 @@ file { '/var/lock/apache2':
 
 user { 'vagrant':
   ensure => present,
-  shell  => "/usr/bin/zsh",
+  shell  => '/usr/bin/zsh',
   require => Package['zsh']
 }
 user { 'root':
   ensure => present,
-  shell  => "/usr/bin/zsh",
+  shell  => '/usr/bin/zsh',
   require => Package['zsh']
 }
 
@@ -177,26 +177,26 @@ file { 'zsh_rc':
 }
 
 
-exec { "pear auto_discover" :
-  command => "/usr/bin/pear config-set auto_discover 1",
+exec { 'pear auto_discover' :
+  command => '/usr/bin/pear config-set auto_discover 1',
   require => Package['php-pear']
 }
-exec { "pear update-channels" :
-  command => "/usr/bin/pear update-channels",
+exec { 'pear update-channels' :
+  command => '/usr/bin/pear update-channels',
   require => Exec['pear auto_discover']
 }
-exec {"pear install phpunit":
-  command => "/usr/bin/pear install --alldeps -s pear.phpunit.de/PHPUnit",
+exec {'pear install phpunit':
+  command => '/usr/bin/pear install --alldeps -s pear.phpunit.de/PHPUnit',
   creates => '/usr/bin/phpunit',
   require => Exec['pear update-channels']
 }
-exec {"pear install drush":
+exec {'pear install drush':
   command => '/usr/bin/pear install --alldeps -s pear.drush.org/drush',
   creates => '/usr/bin/drush',
   require => Exec['pear update-channels']
 }
-exec {"pear install Console_Table":
-  command => "/usr/bin/pear install --alldeps -s --force Console_Table",
+exec {'pear install Console_Table':
+  command => '/usr/bin/pear install --alldeps -s --force Console_Table',
   require => Exec['pear update-channels']
 }
 
