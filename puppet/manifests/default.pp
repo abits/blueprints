@@ -54,7 +54,8 @@ package { 'mailcatcher':
 }
 exec {'run_mailcatcher':
     command => '/usr/local/bin/mailcatcher --ip 0.0.0.0',
-    require => Package['mailcatcher']
+    require => Package['mailcatcher'],
+    creates => '/usr/local/bin/mailcatcher'
 }
 
 # webgrind
@@ -229,6 +230,7 @@ file { '/usr/local/bin/composer':
   require => [ Exec['download_composer'], File['/usr/local/bin'],],
   group => 'root',
   mode => '0755',
+  creates => '/usr/local/bin/composer'
 }
 exec { 'update_composer':
   command => '/usr/local/bin/composer self-update',
@@ -260,6 +262,15 @@ exec {'pear install PhpDocumentor':
   command => '/usr/bin/pear install --alldeps -s --force PhpDocumentor',
   require => Exec['pear update-channels']
 }
+exec {'pear install PHP_CodeSniffer':
+  command => '/usr/bin/pear install --alldeps -s --force PHP_CodeSniffer',
+  require => Exec['pear update-channels']
+}
+exec {'pear install PHP_PMD':
+  command => '/usr/bin/pear install --alldeps -s --force pear.phpmd.org/PHP_PMD',
+  require => Exec['pear update-channels']
+}
+
 
 # python
 package { 
