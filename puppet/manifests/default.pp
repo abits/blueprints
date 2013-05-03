@@ -7,7 +7,7 @@ File {
 }
 
 file { '/usr/local/bin':
-  ensure => directory,
+  ensure => 'directory',
 }
 
 exec { 'apt_update':
@@ -17,14 +17,12 @@ exec { 'apt_update':
 # web server and virtual hosts
 class {'apache': }
 apache::mod { 'alias': }
-apache::mod { 'authz': }
 apache::mod { 'autoindex': }
 apache::mod { 'cache': }
 apache::mod { 'deflate': }
 apache::mod { 'dir': }
 apache::mod { 'expires': }
 apache::mod { 'headers': }
-apache::mod { 'log_config': }
 apache::mod { 'mime': }
 apache::mod { 'negotiation': }
 apache::mod { 'rewrite': }
@@ -47,7 +45,7 @@ file { '/var/lock/apache2':
 
 # mailcatcher
 package { 'libsqlite3-dev':
-  ensure => installed,
+  ensure => 'installed',
 }
 package { 'mailcatcher':
     ensure   => 'installed',
@@ -129,12 +127,20 @@ package {
   [git,
    sudo,
    subversion,
-   emacs23-nox,   
+   emacs23-nox,
+   emacs-goodies-el,   
    vim,
    htop,
    curl,
    links,
-   ncftp]:
+   ncftp,
+   screen,
+   p7zip-full,
+   imagemagick,
+   diffutils,
+   autoconf,
+   automake,
+   make]:
   ensure => present,
   require => [ Exec['apt_update'], ], 
 }
@@ -193,8 +199,11 @@ package {
    php5-intl, 
    php-pear, 
    php5-xdebug, 
+   php5-mcrypt,
    php5-cli,
-   php5-curl,]:
+   php5-curl,
+   php5-dev,
+   php5-imagick]:
   notify  => Service['httpd'],
   require => [ Exec['apt_update'], 
              Class['apache::mod::php'] ],
@@ -245,6 +254,10 @@ exec {'pear install drush':
 }
 exec {'pear install Console_Table':
   command => '/usr/bin/pear install --alldeps -s --force Console_Table',
+  require => Exec['pear update-channels']
+}
+exec {'pear install PhpDocumentor':
+  command => '/usr/bin/pear install --alldeps -s --force PhpDocumentor',
   require => Exec['pear update-channels']
 }
 
