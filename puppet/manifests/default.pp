@@ -31,9 +31,9 @@ apache::mod { 'status': }
 file { '/etc/apache2/envvars':
   ensure => file,
   source => ['/vagrant/puppet/files/envvars',],
-  owner => root,
-  group => root,
-  mode => 644,
+  owner  => root,
+  group  => root,
+  mode   => 644,
   notify => Service['httpd'],
 }
 file { '/var/lock/apache2':
@@ -50,7 +50,7 @@ package { 'libsqlite3-dev':
 package { 'mailcatcher':
     ensure   => 'installed',
     provider => 'gem',
-    require => Package['libsqlite3-dev']
+    require  => Package['libsqlite3-dev']
 }
 exec {'run_mailcatcher':
     command => 'mailcatcher --ip 0.0.0.0',
@@ -96,31 +96,31 @@ package { 'zsh':
   ensure => present
 }
 user { 'vagrant':
-  ensure => present,
-  shell  => '/usr/bin/zsh',
+  ensure  => present,
+  shell   => '/usr/bin/zsh',
   require => Package['zsh']
 }
 file { 'zsh_rc_vagrant':
-  path => '/home/vagrant/.zshrc',
-  source => '/vagrant/puppet/files/zshrc',
-  ensure => file,
-  owner => 'vagrant',
-  group => 'vagrant',
-  mode => '0444',
+  path    => '/home/vagrant/.zshrc',
+  source  => '/vagrant/puppet/files/zshrc',
+  ensure  => file,
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  mode    => '0444',
   require => Package['zsh'],
 }
 user { 'root':
-  ensure => present,
-  shell  => '/usr/bin/zsh',
+  ensure  => present,
+  shell   => '/usr/bin/zsh',
   require => Package['zsh']
 }
 file { 'zsh_rc':
-  path => '/root/.zshrc',
-  source => '/vagrant/puppet/files/zshrc',
-  ensure => file,
-  owner => 'vagrant',
-  group => 'vagrant',
-  mode => '0444',
+  path    => '/root/.zshrc',
+  source  => '/vagrant/puppet/files/zshrc',
+  ensure  => file,
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  mode    => '0444',
   require => Package['zsh'],
 }
 
@@ -165,23 +165,23 @@ package { 'phpmyadmin':
   ensure => installed,
 }
 file { 'phpmyadmin_config':
-  path => '/etc/phpmyadmin/config.inc.php',
-  source => '/vagrant/puppet/files/config.inc.php',
-  ensure => file,
-  owner => 'root',
-  group => 'root',
-  mode => '0444',
+  path    => '/etc/phpmyadmin/config.inc.php',
+  source  => '/vagrant/puppet/files/config.inc.php',
+  ensure  => file,
+  owner   => 'root',
+  group   => 'root',
+  mode    => '0444',
   require => Package['phpmyadmin'],
 }
 file { 'phpmyadmin_alias':
-  path => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
-  source => '/etc/phpmyadmin/apache.conf',
-  ensure => file,
-  owner => 'root',
-  group => 'root',
-  mode => '0444',
+  path    => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
+  source  => '/etc/phpmyadmin/apache.conf',
+  ensure  => file,
+  owner   => 'root',
+  group   => 'root',
+  mode    => '0444',
   require => Package['phpmyadmin'],
-  notify => Service['apache2']
+  notify  => Service['apache2']
 }
 
 # php install and configuration
@@ -202,25 +202,25 @@ package {
              Class['apache::mod::php'] ],
  }
 file { '/etc/php5/conf.d/xxx-custom.ini':
-  ensure => present,
-  owner => root,
-  group => root,
-  mode => 644,
-  source => ['/vagrant/puppet/files/php.ini'],
-  notify => Service['httpd'],
+  ensure  => present,
+  owner   => root,
+  group   => root,
+  mode    => 644,
+  source  => ['/vagrant/puppet/files/php.ini'],
+  notify  => Service['httpd'],
   require => Class['apache::mod::php'],
 }
 exec { 'download_composer':
   command => '/usr/bin/curl -s http://getcomposer.org/installer | php',
-  cwd => '/tmp',
+  cwd     => '/tmp',
   require => Package['curl', 'php5-cli'],
 }
 file { '/usr/local/bin/composer':
-  ensure => present,
-  source => '/tmp/composer.phar',
+  ensure  => present,
+  source  => '/tmp/composer.phar',
   require => [ Exec['download_composer'], File['/usr/local/bin'],],
-  group => 'root',
-  mode => '0755',
+  group   => 'root',
+  mode    => '0755',
 }
 exec { 'update_composer':
   command => '/usr/local/bin/composer self-update',
