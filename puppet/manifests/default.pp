@@ -1,44 +1,38 @@
-file { '/srv/www/drupal':
-    ensure => 'directory',
-    owner  => 'vagrant',
-    group  => 'vagrant',
-    mode   => 755,
+# default attributes of file resource
+File {
+  ensure => 'present',
+  owner  => 'root',
+  group  => 'root',
+  mode   => 644,
 }
 
+file { '/usr/local/bin':
+  ensure => directory,
+}
+
+exec { 'apt_update':
+  command => '/usr/bin/apt-get update'
+}
+
+# web server and virtual hosts
 class {'apache': }
-class {'apache::mod::php': }
-apache::vhost { 'www.d8.dev.local':
-    require         => File['/srv/www/drupal'],
-    priority        => '10',
-    vhost_name      => '*',
-    port            => '80',
-    override        => 'All',
-    docroot         => '/srv/www/drupal',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['d8.dev.local',],
-}
-apache::vhost { 'www.webgrind.dev.local':
-    require         => Exec['install_webgrind'],
-    priority        => '20',
-    vhost_name      => '*',
-    port            => '80',
-    docroot         => '/srv/www/webgrind',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['webgrind.dev.local',],
-}
-apache::vhost { 'www.phpmyadmin.dev.local':
-    require         => Package['phpmyadmin'],
-    priority        => '30',
-    vhost_name      => '*',
-    port            => '80',
-    docroot         => '/usr/share/phpmyadmin',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['phpmyadmin.dev.local',],
-}
+apache::mod { 'alias': }
+apache::mod { 'authz': }
+apache::mod { 'autoindex': }
+apache::mod { 'cache': }
+apache::mod { 'deflate': }
+apache::mod { 'dir': }
+apache::mod { 'expires': }
+apache::mod { 'headers': }
+apache::mod { 'log_config': }
+apache::mod { 'mime': }
+apache::mod { 'negotiation': }
 apache::mod { 'rewrite': }
+apache::mod { 'setenvif': }
+apache::mod { 'status': }
 file { '/etc/apache2/envvars':
   ensure => file,
-  source => ['/vagrant/files/envvars',],
+  source => ['/vagrant/puppet/files/envvars',],
   owner => root,
   group => root,
   mode => 644,
@@ -51,43 +45,101 @@ file { '/var/lock/apache2':
     mode   => 755,
 }
 
+# mailcatcher
+package { 'libsqlite3-dev':
+  ensure => installed,
+}
+package { 'mailcatcher':
+    ensure   => 'installed',
+    provider => 'gem',
+    require => Package['libsqlite3-dev']
+}
+exec {'run_mailcatcher':
+    command => '/usr/local/bin/mailcatcher --ip 0.0.0.0',
+    require => Package['mailcatcher']
+}
+
+# webgrind
+apache::vhost { 'www.webgrind.dev.local':
+    require         => Exec['install_webgrind'],
+    priority        => '20',
+    vhost_name      => '*',
+    port            => '80',
+    docroot         => '/srv/www/webgrind',
+    serveradmin     => 'admin@localhost',
+    serveraliases   => ['webgrind.dev.local',],
+}
+exec {'download_webgrind':
+  cwd     => '/root',
+  command => 'curl -O http://webgrind.googlecode.com/files/webgrind-release-1.0.zip',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/root/webgrind-release-1.0.zip',
+  require => Package['curl'],
+}
+exec {'deflate_webgrind':
+  cwd     => '/root',
+  command => 'unzip /root/webgrind-release-1.0.zip',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/root/webgrind',
+  require => Exec['download_webgrind'],  
+}
+exec {'install_webgrind':
+  cwd     => '/root',
+  command => 'mv /root/webgrind /srv/www/webgrind',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/srv/www/webgrind',
+  require => Exec['deflate_webgrind'],  
+}
+
+# zsh rules!
+package { 'zsh':
+  ensure => present
+}
 user { 'vagrant':
   ensure => present,
   shell  => '/usr/bin/zsh',
   require => Package['zsh']
+}
+file { 'zsh_rc_vagrant':
+  path => '/home/vagrant/.zshrc',
+  source => '/vagrant/puppet/files/zshrc',
+  ensure => file,
+  owner => 'vagrant',
+  group => 'vagrant',
+  mode => '0444',
+  require => Package['zsh'],
 }
 user { 'root':
   ensure => present,
   shell  => '/usr/bin/zsh',
   require => Package['zsh']
 }
-
-package { [php5-mysql, 
-           php5-gd, 
-           php5-intl, 
-           php-pear, 
-           php5-xdebug, 
-           php5-cli,
-           php5-curl,
-           sudo, 
-           phpmyadmin,
-           curl,
-           libsqlite3-dev,
-           git,
-           subversion,
-           zsh,
-           emacs23-nox,   
-           vim,
-           links,
-           python-pip,
-           python-virtualenv,
-           python-dev]:
-  ensure  => present,
-  require => [ Exec['apt_update'], 
-               Class['apache::mod::php'] ],
-  notify  => Service['httpd'],
+file { 'zsh_rc':
+  path => '/root/.zshrc',
+  source => '/vagrant/puppet/files/zshrc',
+  ensure => file,
+  owner => 'vagrant',
+  group => 'vagrant',
+  mode => '0444',
+  require => Package['zsh'],
 }
 
+# stand-alone tools for devs
+package {
+  [git,
+   sudo,
+   subversion,
+   emacs23-nox,   
+   vim,
+   htop,
+   curl,
+   links,
+   ncftp]:
+  ensure => present,
+  require => [ Exec['apt_update'], ], 
+}
+
+# mysql and phpmyadmin
 class { 'mysql': }
 class { 'mysql::server':
   config_hash => { 
@@ -101,29 +153,66 @@ mysql::db { 'drupal':
   host     => 'localhost',
   grant    => ['all'],
 }
+package { 'phpmyadmin':
+  ensure => installed,
+}
+apache::vhost { 'www.phpmyadmin.dev.local':
+    require         => Package['phpmyadmin'],
+    priority        => '30',
+    vhost_name      => '*',
+    port            => '80',
+    docroot         => '/usr/share/phpmyadmin',
+    serveradmin     => 'admin@localhost',
+    serveraliases   => ['phpmyadmin.dev.local',],
+}
+file { 'phpmyadmin_config':
+  path => '/etc/phpmyadmin/config.inc.php',
+  source => '/vagrant/puppet/files/config.inc.php',
+  ensure => file,
+  owner => 'root',
+  group => 'root',
+  mode => '0444',
+  require => Package['phpmyadmin'],
+}
+file { 'phpmyadmin_alias':
+  path => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
+  source => '/etc/phpmyadmin/apache.conf',
+  ensure => file,
+  owner => 'root',
+  group => 'root',
+  mode => '0444',
+  require => Package['phpmyadmin'],
+  notify => Service['apache2']
+}
 
+# php install and configuration
+class {'apache::mod::php': }
+package { 
+  [php5-mysql, 
+   php5-gd, 
+   php5-intl, 
+   php-pear, 
+   php5-xdebug, 
+   php5-cli,
+   php5-curl,]:
+  notify  => Service['httpd'],
+  require => [ Exec['apt_update'], 
+             Class['apache::mod::php'] ],
+ }
 file { '/etc/php5/conf.d/xxx-custom.ini':
   ensure => present,
   owner => root,
   group => root,
   mode => 644,
-  source => ['/vagrant/files/php.ini'],
+  source => ['/vagrant/puppet/files/php.ini'],
   notify => Service['httpd'],
-  require => Class['apache::mod::php']
+  require => Class['apache::mod::php'],
 }
-
-exec { 'apt_update':
-  command => '/usr/bin/apt-get update'
-}
-
 exec { 'download_composer':
   command => '/usr/bin/curl -s http://getcomposer.org/installer | php',
   cwd => '/tmp',
   require => Package['curl', 'php5-cli'],
   creates => '/tmp/composer.phar',
-}
-file { '/usr/local/bin':
-  ensure => directory,
 }
 file { '/usr/local/bin/composer':
   ensure => present,
@@ -136,48 +225,6 @@ exec { 'update_composer':
   command => '/usr/local/bin/composer self-update',
   require => File['/usr/local/bin/composer'],
 }
-
-file { 'phpmyadmin_config':
-  path => '/etc/phpmyadmin/config.inc.php',
-  source => '/vagrant/files/config.inc.php',
-  ensure => file,
-  owner => 'root',
-  group => 'root',
-  mode => '0444',
-  require => Package['phpmyadmin'],
-}
-
-file { 'phpmyadmin_alias':
-  path => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
-  source => '/etc/phpmyadmin/apache.conf',
-  ensure => file,
-  owner => 'root',
-  group => 'root',
-  mode => '0444',
-  require => Package['phpmyadmin'],
-  notify => Service['apache2']
-}
-
-file { 'zsh_rc_vagrant':
-  path => '/home/vagrant/.zshrc',
-  source => '/vagrant/files/zshrc',
-  ensure => file,
-  owner => 'vagrant',
-  group => 'vagrant',
-  mode => '0444',
-  require => Package['zsh'],
-}
-file { 'zsh_rc':
-  path => '/root/.zshrc',
-  source => '/vagrant/files/zshrc',
-  ensure => file,
-  owner => 'vagrant',
-  group => 'vagrant',
-  mode => '0444',
-  require => Package['zsh'],
-}
-
-
 exec { 'pear auto_discover' :
   command => '/usr/bin/pear config-set auto_discover 1',
   require => Package['php-pear']
@@ -201,35 +248,12 @@ exec {'pear install Console_Table':
   require => Exec['pear update-channels']
 }
 
-package { 'mailcatcher':
-    ensure   => 'installed',
-    provider => 'gem',
-    require => Package['libsqlite3-dev']
-}
-exec {'run_mailcatcher':
-    command => '/usr/local/bin/mailcatcher --ip 0.0.0.0',
-    require => Package['mailcatcher']
-}
-exec {'download_webgrind':
-  cwd     => '/root',
-  command => 'curl -O http://webgrind.googlecode.com/files/webgrind-release-1.0.zip',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/root/webgrind-release-1.0.zip',
-  require => Package['curl'],
-}
-exec {'deflate_webgrind':
-  cwd     => '/root',
-  command => 'unzip /root/webgrind-release-1.0.zip',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/root/webgrind',
-  require => Exec['download_webgrind'],  
-}
-exec {'install_webgrind':
-  cwd     => '/root',
-  command => 'mv /root/webgrind /srv/www/webgrind',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/srv/www/webgrind',
-  require => Exec['deflate_webgrind'],  
+# python
+package { 
+  [python-pip,
+   python-virtualenv,
+   python-dev]:
+   ensure => installed,
 }
 exec {'install_fabric':
   cwd     => '/root',
@@ -239,5 +263,20 @@ exec {'install_fabric':
   require => Package['python-pip'],  
 }
 
-
-
+# drupal 
+file { '/srv/www/drupal':
+    ensure => 'directory',
+    owner  => 'vagrant',
+    group  => 'vagrant',
+    mode   => 755,
+}
+apache::vhost { 'www.d8.dev.local':
+    require         => File['/srv/www/drupal'],
+    priority        => '10',
+    vhost_name      => '*',
+    port            => '80',
+    override        => 'All',
+    docroot         => '/srv/www/drupal',
+    serveradmin     => 'admin@localhost',
+    serveraliases   => ['d8.dev.local',],
+}
