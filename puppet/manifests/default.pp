@@ -61,7 +61,7 @@ exec {'run_mailcatcher':
 # webgrind
 apache::vhost { 'www.webgrind.dev.local':
     require         => Exec['install_webgrind'],
-    priority        => '20',
+    priority        => '40',
     vhost_name      => '*',
     port            => '80',
     docroot         => '/srv/www/webgrind',
@@ -162,15 +162,6 @@ mysql::db { 'drupal':
 }
 package { 'phpmyadmin':
   ensure => installed,
-}
-apache::vhost { 'www.phpmyadmin.dev.local':
-    require         => Package['phpmyadmin'],
-    priority        => '30',
-    vhost_name      => '*',
-    port            => '80',
-    docroot         => '/usr/share/phpmyadmin',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['phpmyadmin.dev.local',],
 }
 file { 'phpmyadmin_config':
   path => '/etc/phpmyadmin/config.inc.php',
