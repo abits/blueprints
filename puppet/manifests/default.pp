@@ -222,7 +222,6 @@ exec { 'download_composer':
   command => '/usr/bin/curl -s http://getcomposer.org/installer | php',
   cwd => '/tmp',
   require => Package['curl', 'php5-cli'],
-  creates => '/tmp/composer.phar',
 }
 file { '/usr/local/bin/composer':
   ensure => present,
@@ -230,7 +229,6 @@ file { '/usr/local/bin/composer':
   require => [ Exec['download_composer'], File['/usr/local/bin'],],
   group => 'root',
   mode => '0755',
-  creates => '/usr/local/bin/composer'
 }
 exec { 'update_composer':
   command => '/usr/local/bin/composer self-update',
@@ -256,18 +254,22 @@ exec {'pear install drush':
 }
 exec {'pear install Console_Table':
   command => '/usr/bin/pear install --alldeps -s --force Console_Table',
+  creates => '/usr/share/php/Console/Table.php',
   require => Exec['pear update-channels']
 }
 exec {'pear install PhpDocumentor':
   command => '/usr/bin/pear install --alldeps -s --force PhpDocumentor',
+  creates => '/usr/bin/phpdoc',
   require => Exec['pear update-channels']
 }
 exec {'pear install PHP_CodeSniffer':
   command => '/usr/bin/pear install --alldeps -s --force PHP_CodeSniffer',
+  creates => '/usr/bin/phpcs',
   require => Exec['pear update-channels']
 }
 exec {'pear install PHP_PMD':
   command => '/usr/bin/pear install --alldeps -s --force pear.phpmd.org/PHP_PMD',
+  creates => '/usr/bin/phpmd',
   require => Exec['pear update-channels']
 }
 
