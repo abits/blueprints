@@ -53,9 +53,10 @@ package { 'mailcatcher':
     require => Package['libsqlite3-dev']
 }
 exec {'run_mailcatcher':
-    command => '/usr/local/bin/mailcatcher --ip 0.0.0.0',
+    command => 'mailcatcher --ip 0.0.0.0',
     require => Package['mailcatcher'],
-    creates => '/usr/local/bin/mailcatcher'
+    path    => '/usr/local/bin/:/bin/:/usr/bin/',
+    onlyif  => 'netstat -lanp tcp | grep -c 0.0.0.0:1080'
 }
 
 # webgrind
