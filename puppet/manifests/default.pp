@@ -6,6 +6,10 @@ File {
   mode   => 644,
 }
 
+Exec {
+    path => '/usr/local/bin/:/bin/:/usr/bin/',
+}
+
 file { '/usr/local/bin':
   ensure => 'directory',
 }
@@ -55,38 +59,34 @@ package { 'mailcatcher':
 exec {'run_mailcatcher':
     command => 'mailcatcher --ip 0.0.0.0',
     require => Package['mailcatcher'],
-    path    => '/usr/local/bin/:/bin/:/usr/bin/',
-    onlyif  => 'netstat -lanp tcp | grep -c 0.0.0.0:1080'
+#    onlyif  => 'netstat -lanp tcp | grep -c 0.0.0.0:1080'
 }
 
 # webgrind
-apache::vhost { 'www.webgrind.dev.local':
+apache::vhost { 'www.webgrind.vbox.local':
     require         => Exec['install_webgrind'],
     priority        => '40',
     vhost_name      => '*',
     port            => '80',
     docroot         => '/srv/www/webgrind',
     serveradmin     => 'admin@localhost',
-    serveraliases   => ['webgrind.dev.local',],
+    serveraliases   => ['webgrind.vbox.local',],
 }
 exec {'download_webgrind':
   cwd     => '/root',
   command => 'curl -O http://webgrind.googlecode.com/files/webgrind-release-1.0.zip',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
   creates => '/root/webgrind-release-1.0.zip',
   require => Package['curl'],
 }
 exec {'deflate_webgrind':
   cwd     => '/root',
   command => 'unzip /root/webgrind-release-1.0.zip',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
   creates => '/root/webgrind',
   require => Exec['download_webgrind'],  
 }
 exec {'install_webgrind':
   cwd     => '/root',
   command => 'mv /root/webgrind /srv/www/webgrind',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
   creates => '/srv/www/webgrind',
   require => Exec['deflate_webgrind'],  
 }
@@ -276,7 +276,6 @@ package {
 exec {'install_fabric':
   cwd     => '/root',
   command => '/usr/bin/pip install fabric',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
   creates => '/usr/local/bin/fab',
   require => Package['python-pip'],  
 }
@@ -288,7 +287,7 @@ file { '/srv/www/drupal':
     group  => 'vagrant',
     mode   => 755,
 }
-apache::vhost { 'www.d8.dev.local':
+apache::vhost { 'www.dev.vbox.local':
     require         => File['/srv/www/drupal'],
     priority        => '10',
     vhost_name      => '*',
@@ -296,5 +295,5 @@ apache::vhost { 'www.d8.dev.local':
     override        => 'All',
     docroot         => '/srv/www/drupal',
     serveradmin     => 'admin@localhost',
-    serveraliases   => ['d8.dev.local',],
+    serveraliases   => ['dev.vbox.local',],
 }
