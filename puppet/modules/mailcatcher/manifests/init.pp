@@ -17,7 +17,7 @@ class mailcatcher {
         command => 'mailcatcher --ip 0.0.0.0',
         require => Package['mailcatcher'],
         path    => '/usr/local/bin/:/bin/:/usr/bin/',
-        onlyif  => "/bin/netstat -lanp tcp | /bin/grep -c 0.0.0.0:1080",
+        unless  => "/bin/netstat -lanp tcp | /bin/grep -c 0.0.0.0:1080",
         returns => ['0', '255'],
     }
 }

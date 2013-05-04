@@ -17,6 +17,7 @@ class dev_tools {
                 p7zip-full,
                 imagemagick,
                 diffutils,
+                colordiff,
                 autoconf,
                 automake,
                 make, ]:

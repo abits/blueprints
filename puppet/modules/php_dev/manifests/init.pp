@@ -36,10 +36,18 @@ class php_dev {
         require => Package['curl', 'php5-cli'],
     }
 
+    exec { 'install_composer': 
+        command => 'mv composer.phar /usr/bin/composer',
+        path    => '/usr/local/bin/:/bin/:/usr/bin/',
+        cwd     => '/tmp',
+        creates => '/usr/bin/composer',
+        require => Exec['download_composer'],
+    }
+
     file { '/usr/bin/composer':
         ensure  => 'present',
-        source  => '/tmp/composer.phar',
-        require => Exec['download_composer'],
+        require => Exec['install_composer'],
+        owner   => 'root',
         group   => 'root',
         mode    => '0755',
     }
@@ -54,7 +62,7 @@ class php_dev {
         command => 'pear config-set auto_discover 1',
         path    => '/usr/local/bin/:/bin/:/usr/bin/',
         require => Package['php-pear'],
-        onlyif  => '/usr/bin/pear config-get auto_discover',
+#        onlyif  => '/usr/bin/pear config-get auto_discover',
     }
 
     exec { 'pear update-channels':
