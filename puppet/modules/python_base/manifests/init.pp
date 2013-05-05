@@ -5,7 +5,9 @@ class python_base {
 
     package { [ python-pip,
                 python-virtualenv,
-                python-dev, ]:
+                python-dev,
+                python-docutils,
+                python-sphinx, ]:
         ensure => installed,
     }
 

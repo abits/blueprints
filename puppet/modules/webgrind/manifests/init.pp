@@ -26,4 +26,12 @@ class webgrind {
       path    => '/usr/local/bin/:/bin/:/usr/bin/',  
       require => Exec['deflate_webgrind'],  
   }
+
+  exec {'chown_webgrind':
+      command => '/bin/chown vagrant:vagrant -R /srv/www/webgrind',
+      creates => '/srv/www/webgrind',
+      path    => '/usr/local/bin/:/bin/:/usr/bin/',  
+      require => Exec['install_webgrind'],        
+  }
+
 }

@@ -5,6 +5,7 @@ class php_dev {
 
     package { 
       [php5,
+       php-apc,
        php5-mysql, 
        php5-gd, 
        php5-intl, 
@@ -14,7 +15,9 @@ class php_dev {
        php5-cli,
        php5-curl,
        php5-dev,
-       php5-imagick]:
+       php5-imagick,
+       php5-xsl, 
+       graphviz, ]:
       notify  => Service['httpd'],
     }
 
@@ -25,6 +28,14 @@ class php_dev {
         mode    => 644,
         source  => 'puppet:///modules/php_dev/php.ini',
         notify  => Service['httpd'],
+        require => Package['php5'],
+    }
+
+    # on a dev system we run apache as vagrant
+    file { '/var/lib/php/session' :
+        owner  => 'root',
+        group  => 'vagrant',
+        mode   => 0770,
         require => Package['php5'],
     }
 
@@ -93,7 +104,7 @@ class php_dev {
     }
 
     exec {'pear install PhpDocumentor':
-        command => 'pear install --alldeps -s --force PhpDocumentor',
+        command => 'pear install --alldeps -s --force pear.phpdoc.org/PhpDocumentor-alpha',
         path    => '/usr/local/bin/:/bin/:/usr/bin/',
         creates => '/usr/bin/phpdoc',
         require => Exec['pear update-channels'],
