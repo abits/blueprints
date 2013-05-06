@@ -30,4 +30,10 @@ class phpmyadmin {
         mode   => '0444',   
     }
 
+    file { '/usr/share/phpmyadmin':
+        ensure  => 'directory',
+        require => Package['phpmyadmin'],
+        owner  => 'vagrant',
+        group  => 'vagrant',
+    }
 }

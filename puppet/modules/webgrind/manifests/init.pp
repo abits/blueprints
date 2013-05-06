@@ -27,11 +27,10 @@ class webgrind {
       require => Exec['deflate_webgrind'],  
   }
 
-  exec {'chown_webgrind':
-      command => '/bin/chown vagrant:vagrant -R /srv/www/webgrind',
-      creates => '/srv/www/webgrind',
-      path    => '/usr/local/bin/:/bin/:/usr/bin/',  
-      require => Exec['install_webgrind'],        
+  file {'/srv/www/webgrind':
+    ensure  => 'directory',
+    owner   => 'vagrant',
+    group   => 'vagrant',
   }
 
 }
