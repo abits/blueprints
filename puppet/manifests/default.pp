@@ -70,14 +70,38 @@ apache::vhost { 'www.webgrind.vbox.local':
 
 
 # set up vhost and db access for Drupal
-file { '/srv/www/drupal':
-    ensure => 'directory',
-    owner  => 'vagrant',
-    group  => 'vagrant',
-    mode   => 755,
+
+# drupal 
+exec {'download_drupal':
+  cwd     => '/tmp',
+  command => 'wget http://ftp.drupal.org/files/projects/drupal-8.x-dev.tar.gz',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/srv/www/drupal/index.php',
 }
+
+exec {'deflate_drupal':
+  cwd     => '/tmp',
+  command => 'tar xvf drupal-8.x-dev.tar.gz',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/srv/www/drupal/index.php',
+  require => Exec['download_drupal'],
+}
+
+exec {'install_drupal':
+  command => 'mv /tmp/drupal-8.x-dev /srv/www/drupal',
+  path    => '/usr/local/bin/:/bin/:/usr/bin/',
+  creates => '/srv/www/drupal/index.php',
+  require => Exec['deflate_drupal'],
+}
+
+file {'/srv/www/drupal':
+  owner => 'vagrant',
+  group => 'vagrant',
+  mode  => '644',
+}
+
 apache::vhost { 'www.dev.vbox.local':
-    require         => File['/srv/www/drupal'],
+    require         => Exec['install_drupal'],
     priority        => '10',
     vhost_name      => '*',
     port            => '80',
