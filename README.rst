@@ -6,7 +6,7 @@ Basic stack for php/drupal development.
 Setup
 =====
 
-::
+.. code:: bash
 
   git clone 'repo'
   git submodule init
@@ -16,7 +16,7 @@ Setup
 vhosts
 ======
 
-::
+.. code:: bash
 
   33.33.33.10   www.dev.vbox.local
   33.33.33.10   dev.vbox.local
@@ -26,7 +26,7 @@ vhosts
 phpmyadmin
 ==========
 
-::
+.. code:: bash
 
   User: root
   Password: password
@@ -34,7 +34,7 @@ phpmyadmin
 Drupal install
 ==============
 
-::
+..code:: bash
 
   Db name: drupal
   Db username: drupal
