@@ -95,9 +95,11 @@ exec {'install_drupal':
 }
 
 file {'/srv/www/drupal':
-  owner => 'vagrant',
-  group => 'vagrant',
-  mode  => '644',
+  owner   => 'vagrant',
+  group   => 'vagrant',
+  mode    => '644',
+  recurse => true,
+  require => Exec['install_drupal']
 }
 
 apache::vhost { 'www.dev.vbox.local':
