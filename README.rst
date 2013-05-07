@@ -4,7 +4,7 @@ vagrant-drupal
 Basic stack for php/drupal development.
 
 Setup
-=====
+-----
 
 .. code:: bash
 
@@ -14,7 +14,7 @@ Setup
   vagrant up
 
 vhosts
-======
+------
 
 .. code:: bash
 
@@ -24,7 +24,7 @@ vhosts
   33.33.33.10   webgrind.vbox.local
 
 phpmyadmin
-==========
+----------
 
 .. code:: bash
 
@@ -32,7 +32,7 @@ phpmyadmin
   Password: password
 
 Drupal install
-==============
+--------------
 
 ..code:: bash
 
