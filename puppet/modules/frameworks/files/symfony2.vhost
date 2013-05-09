@@ -5,6 +5,7 @@
 
     <Directory /srv/www/symfony/web>
         AllowOverride None
+        Options FollowSymLinks
  
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-f
