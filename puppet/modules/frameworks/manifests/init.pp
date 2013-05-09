@@ -1,9 +1,9 @@
-# Class: drupal
-# Configure a basic drupal setup
+# Class: framework
+# Configure a basic framework setup
 #
-class frameworks( $type) {
+class frameworks( $name ) {
 
-    if $type == 'drupal' {
+    if $name == 'drupal' {
       file { '/srv/www/drupal':
          ensure => 'link',
          target => '/vagrant/www',
@@ -17,36 +17,29 @@ class frameworks( $type) {
         source  => 'puppet:///modules/frameworks/drupal8.vhost',
         notify  => Service['httpd'],
       }
-
-      mysql::db { 'drupal':
-          user     => 'drupal',
-          password => 'drupal',
-          host     => 'localhost',
-          grant    => ['all'],
-      }
     }
 
-    # exec {'download_drupal':
-    #   cwd     => '/root',
-    #   command => 'curl -O http://ftp.drupal.org/files/projects/drupal-8.x-dev.tar.gz',
-    #   path    => '/usr/local/bin/:/bin/:/usr/bin/',
-    #   creates => '/root/drupal-8.x-dev.tar.gz'
-    # }
+    if $name == 'symfony' {
+        file { '/srv/www/symfony':
+           ensure => 'link',
+           target => '/vagrant/www',
+        }
 
-    # exec {'deflate_drupal':
-    #   cwd     => '/root',
-    #   command => 'tar xvf drupal-8.x-dev.tar.gz',
-    #   path    => '/usr/local/bin/:/bin/:/usr/bin/',
-    #   creates => '/root/drupal-8.x-dev',
-    #   require => Exec['download_drupal'],
-    # }
+        file { '/etc/apache2/sites-enabled/10-www.symfony.vbox.local.conf':
+          ensure  => 'present',
+          owner   => 'root',
+          group   => 'root',
+          mode    => '644',
+          source  => 'puppet:///modules/frameworks/symfony2.vhost',
+          notify  => Service['httpd'],
+        }
+    }
 
-    # exec {'install_drupal':
-    #   command  => 'mv /root/drupal-8.x-dev/* /srv/www/drupal',
-    #   path     => '/usr/local/bin/:/bin/:/usr/bin/',
-    #   require => [ File['/srv/www/drupal'], Exec['deflate_drupal'] ],
-    # }
-
-
+    mysql::db { $name:
+      user     => $name,
+      password => $name,
+      host     => 'localhost',
+      grant    => ['all'],
+    }
 
 }

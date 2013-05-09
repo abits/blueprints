@@ -56,7 +56,7 @@ class { 'mailcatcher': }
 class { 'dev_tools': }
 class { 'zsh': }
 class { 'phpmyadmin': }
-class { 'python_base': }
+#class { 'python_base': }
 class { 'webgrind': }
 apache::vhost { 'www.webgrind.vbox.local':
     require         => Class['webgrind'],
@@ -70,5 +70,5 @@ apache::vhost { 'www.webgrind.vbox.local':
 
 # set up a framework, use drupal, symfony, django or flask as value for $type
 class { 'frameworks': 
-    type => 'drupal',
+    name => 'symfony',
 }

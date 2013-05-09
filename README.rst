@@ -33,8 +33,8 @@ vhosts
 
 .. code:: bash
 
-  33.33.33.10   www.dev.vbox.local
-  33.33.33.10   dev.vbox.local
+  33.33.33.10   www.drupal.vbox.local  drupal.vbox.local
+  33.33.33.10   www.symfony.vbox.local symfony.vbox.local
   33.33.33.10   phpmyadmin.vbox.local
   33.33.33.10   webgrind.vbox.local
 
@@ -61,9 +61,37 @@ zum Einsatz:
 
 .. code:: bash
   
-  fab bootstrap_drupal
+  $ fab bootstrap_drupal
 
 *Achtung*: Dateien und Verzeichnisse in www/ wird ggf. überschrieben. Fabric
 ist auf den meisten Distributionen als Paket verfügbar.  Eine Liste von
 ausführbaren Tasks erhält man mit ``fab -l``.  Fabric muss immer in dem
 Verzeichnis aufgerufen werden, in dem sich die Datei ``fabfile.py`` befindet.
+Die Drupal Site ist erreichbar unter 
+
+Symfony install
+---------------
+
+Aber ich möchte Symfony! Kein Problem.  Puppetseitig ist der Schalter in der
+Datei ``puppet/manifests/default.pp``.  Finde die Deklaration für die Klasse
+``framework`` und  setze den Parameter ``name`` auf ``symfony``; so:
+
+.. code:: javascript
+
+  class { 'frameworks': 
+      name => 'symfony',
+  }
+
+Das ``fabfile.py`` hält auch für Symfony einen Task vor: 
+
+.. code:: bash
+
+  $ fab bootstrap_symfony
+
+Dieser Task führt eine Symfony-Installation mit ``composer`` remote in der
+Virtuellen Maschine durch.  Danach ist die Site ansprechbar unter
+``www.symfony.vbox.local/app_dev.php`` (sofern die ``/etc/hosts`` Datei
+entsprechend angepasst wurde).  *Achtung*: Symfony verbietet per default den
+Zugriff auf den Dev-Controller von remote hosts.  Deshalb ist noch die Datei
+``www/web/app_dev.php`` entsprechend anzupassen, um den Zugriff vom Host zu
+erlauben.  

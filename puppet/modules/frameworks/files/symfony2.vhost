@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    DocumentRoot /srv/www/symfony/web
+    ServerName www.symfony.vbox.local
+    ServerAlias symfony.vbox.local
+
+    <Directory /srv/www/symfony/web>
+        AllowOverride None
+ 
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ app.php [QSA,L]
+ 
+    </Directory>
+</VirtualHost>
