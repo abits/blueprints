@@ -67,7 +67,9 @@ zum Einsatz:
 ist auf den meisten Distributionen als Paket verfügbar.  Eine Liste von
 ausführbaren Tasks erhält man mit ``fab -l``.  Fabric muss immer in dem
 Verzeichnis aufgerufen werden, in dem sich die Datei ``fabfile.py`` befindet.
-Die Drupal Site ist erreichbar unter 
+Die Drupal Site ist erreichbar unter http://www.drupal.vbox.local/install.php, 
+sofern die Datei ``/etc/hosts`` entsprechend konfiguriert ist.
+
 
 Symfony install
 ---------------
@@ -76,7 +78,7 @@ Aber ich möchte Symfony! Kein Problem.  Puppetseitig ist der Schalter in der
 Datei ``puppet/manifests/default.pp``.  Finde die Deklaration für die Klasse
 ``framework`` und  setze den Parameter ``name`` auf ``symfony``; so:
 
-.. code:: javascript
+.. code:: ruby
 
   class { 'frameworks': 
       name => 'symfony',
@@ -90,7 +92,7 @@ Das ``fabfile.py`` hält auch für Symfony einen Task vor:
 
 Dieser Task führt eine Symfony-Installation mit ``composer`` remote in der
 Virtuellen Maschine durch.  Danach ist die Site ansprechbar unter
-``www.symfony.vbox.local/app_dev.php`` (sofern die ``/etc/hosts`` Datei
+http://www.symfony.vbox.local/app_dev.php (sofern die ``/etc/hosts`` Datei
 entsprechend angepasst wurde).  *Achtung*: Symfony verbietet per default den
 Zugriff auf den Dev-Controller von remote hosts.  Deshalb ist noch die Datei
 ``www/web/app_dev.php`` entsprechend anzupassen, um den Zugriff vom Host zu
