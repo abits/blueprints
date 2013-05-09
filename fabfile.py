@@ -35,4 +35,15 @@ def install_framework(filename):
         src = os.path.join(filename, item)
         target = os.path.join(source_dir, item)
         shutil.move(src, target)
-        
+
+@task        
+def ip_up():
+    '''Configure host network adapter for host_only communication.'''
+    local('sudo ip link set vboxnet0 up')
+    local('sudo ip addr add 33.33.33.1/24 dev vboxnet0')
+
+@task
+def start_nfs():
+    '''Make sure nfs services are running (tested with Arch, your mileage may vary).'''
+    local('sudo systemctl restart rpc-idmapd')
+    local('sudo systemctl restart rpc-mountd')

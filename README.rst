@@ -9,14 +9,25 @@ Setup
 
 .. code:: bash
 
-  git clone 'repo'
-  git submodule init
-  git submodule update
-  sudo ./ip-up.sh
-  sudo ./start-nfs.sh
-  vagrant up
+  $ git clone 'repo'
+  $ git submodule init
+  $ git submodule update
+  $ fab start_nfs
+  $ vagrant up
+  $ fab ip_up
 
-Die beiden Shell-Skripte konfigurieren den Netzwerkadapter und den nfs-Server beim Host.  
+Die beiden `Fabric <http://docs.fabfile.org/>`_ tasks ``fab <TASK>``
+konfigurieren den Netzwerkadapter und den nfs-Server beim Host unter Arch
+Linux.  Damit *shared folder* mit nfs funktioniert, muss auf dem Host ein nfs-
+server laufen. Unter Arch (und wahrscheinlich Fedora) reicht es dazu, das
+Paket ``nfs- utils`` zu installieren und die Daemons über das Skript zu
+starten. Weitere Infos für
+`Fedora <https://fedoraproject.org/wiki/Archive:Docs/Drafts/Administration Guide/Servers/NetworkFileSystem>`_ 
+und für  
+`Ubuntu <https://help.ubuntu.com/community/SettingUpNFSHowTo>`_. 
+Im Host interessiert nur der Server-Part; Vagrant übernimmt die Konfiguration
+beim Hochfahren und benutzt  dafür ``sudo``; außer dem Starten der nötigen
+Daemons (rpc und idmapd) sollte im Host nichts weiter zu tun sein.
 
 vhosts
 ------
@@ -46,11 +57,14 @@ Drupal install
   Db password: drupal
 
 Puppet konfiguriert den Server - aber nicht den Quellcode.  Um Drupal 8 in das
-Verzeichnis ``www/`` zu installieren, kommt ``fabric`` zum Einsatz:
+Verzeichnis ``www/`` zu installieren, kommt `Fabric <http://docs.fabfile.org/>`_
+zum Einsatz:
 
 .. code:: bash
   
   fab bootstrap_drupal
 
-*Achtung*: Dateien und Verzeichnisse in www/ wird ggf. überschrieben.
-Fabric ist auf den meisten Distributionen als Paket verfügbar.
+*Achtung*: Dateien und Verzeichnisse in www/ wird ggf. überschrieben. Fabric
+ist auf den meisten Distributionen als Paket verfügbar.  Eine Liste von
+ausführbaren Tasks erhält man mit ``fab -l``.  Fabric muss immer in dem
+Verzeichnis aufgerufen werden, in dem sich die Datei ``fabfile.py`` befindet.
