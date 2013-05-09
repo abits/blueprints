@@ -1,5 +1,5 @@
-# setting up a basic LAMP stack for Drupal development
-# (c) Chris Martel <chris@codeways.org>
+# Setting up software stacks for web development.
+# (c) 2013, Chris Martel <chris@codeways.org>
 
 # update package database
 exec { 'apt_update':
@@ -7,68 +7,17 @@ exec { 'apt_update':
     path    => '/usr/local/bin/:/bin/:/usr/bin/',  
 }
 
-
-# set up web and database servers
-class {'apache': }
-apache::mod { 'alias': }
-apache::mod { 'autoindex': }
-apache::mod { 'cache': }
-apache::mod { 'deflate': }
-apache::mod { 'dir': }
-apache::mod { 'expires': }
-apache::mod { 'headers': }
-apache::mod { 'mime': }
-apache::mod { 'negotiation': }
-apache::mod { 'rewrite': }
-apache::mod { 'setenvif': }
-apache::mod { 'status': }
-file { '/etc/apache2/envvars':
-    ensure => file,
-    source => ['/vagrant/puppet/files/envvars',],
-    owner  => root,
-    group  => root,
-    mode   => 644,
-    notify => Service['httpd'],
+# set up a framework, use drupal or symfony as value for $type
+class { 'frameworks': 
+    name      => 'symfony',
+    dbms      => 'mysql',
+    webserver => 'apache',
 }
-file { '/var/lock/apache2':
-    ensure => 'directory',
-    owner  => 'vagrant',
-    group  => 'vagrant',
-    mode   => 755,
-}
-
-class { 'mysql': }
-class { 'mysql::server':
-    config_hash => { 
-        root_password => 'password',
-        bind_address => '0.0.0.0'
-    }
-}
-
-
-# set up php
-class { 'apache::mod::php': }
-class { 'php_dev': }
-
 
 # set up tools
 class { 'mailcatcher': }
 class { 'dev_tools': }
 class { 'zsh': }
-class { 'phpmyadmin': }
+
 #class { 'python_base': }
 class { 'webgrind': }
-apache::vhost { 'www.webgrind.vbox.local':
-    require         => Class['webgrind'],
-    priority        => '40',
-    vhost_name      => '*',
-    port            => '80',
-    docroot         => '/srv/www/webgrind',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['webgrind.vbox.local',],
-}
-
-# set up a framework, use drupal, symfony, django or flask as value for $type
-class { 'frameworks': 
-    name => 'symfony',
-}
