@@ -1,8 +1,7 @@
-==============
-vagrant-webdev
-==============
+blueprints
+==========
 
-Basic stack for web development.
+Blueprints for web development stacks.
 
 Setup
 -----
