@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./www", "/srv/www/drupal", :nfs => true, :nfs_version => 4, :create => true
+  # config.vm.synced_folder "./www", "/srv/www/drupal", :nfs => true, :nfs_version => 4, :create => true
   config.vm.synced_folder(".", "/vagrant", :nfs => true, :nfs_version => 4)
   #config.vm.synced_folder("./puppet/manifests", "/tmp/vagrant-puppet/manifests", :nfs => true, :nfs_version => 4)
   #config.vm.synced_folder("./puppet/modules", "//tmp/vagrant-puppet/modules-0", :nfs => true, :nfs_version => 4)

@@ -68,53 +68,7 @@ apache::vhost { 'www.webgrind.vbox.local':
     serveraliases   => ['webgrind.vbox.local',],
 }
 
-
-# set up vhost and db access for Drupal
-
-# drupal 
-exec {'download_drupal':
-  cwd     => '/tmp',
-  command => 'wget http://ftp.drupal.org/files/projects/drupal-8.x-dev.tar.gz',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/srv/www/drupal/index.php',
-}
-
-exec {'deflate_drupal':
-  cwd     => '/tmp',
-  command => 'tar xvf drupal-8.x-dev.tar.gz',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/srv/www/drupal/index.php',
-  require => Exec['download_drupal'],
-}
-
-exec {'install_drupal':
-  command => 'mv /tmp/drupal-8.x-dev /srv/www/drupal',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/',
-  creates => '/srv/www/drupal/index.php',
-  require => Exec['deflate_drupal'],
-}
-
-file {'/srv/www/drupal':
-  owner   => 'vagrant',
-  group   => 'vagrant',
-  mode    => '644',
-  recurse => true,
-  require => Exec['install_drupal']
-}
-
-apache::vhost { 'www.dev.vbox.local':
-    require         => Exec['install_drupal'],
-    priority        => '10',
-    vhost_name      => '*',
-    port            => '80',
-    override        => 'All',
-    docroot         => '/srv/www/drupal',
-    serveradmin     => 'admin@localhost',
-    serveraliases   => ['dev.vbox.local',],
-}
-mysql::db { 'drupal':
-    user     => 'drupal',
-    password => 'drupal',
-    host     => 'localhost',
-    grant    => ['all'],
+# set up a framework, use drupal, symfony, django or flask as value for $type
+class { 'frameworks': 
+    type => 'drupal',
 }

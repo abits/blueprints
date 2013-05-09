@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+    ServerName  www.drupal.vbox.local
+    ServerAlias drupal.vbox.local
+    DocumentRoot /srv/www/drupal
+    <Directory "/srv/www/drupal">
+        Options FollowSymLinks
+        AllowOverride All
+    </Directory>
+</VirtualHost>
