@@ -17,7 +17,7 @@ env.password = 'vagrant'
 
 @task
 def bootstrap_drupal():
-    ''' Downloading and installing drupal.'''
+    ''' Download and install Drupal.'''
 
     version = 8
     filename = '%s-%s.x-dev' % ('drupal', version)
@@ -34,7 +34,7 @@ def bootstrap_drupal():
 @task
 @hosts(vm)
 def bootstrap_symfony():
-    '''Downloading and installing Symfony.'''
+    '''Download and install Symfony.'''
 
     target = os.path.join('/vagrant', source_dir)
     install_cmd = 'composer create-project symfony/framework-standard-edition %s/ 2.2.1' % target
