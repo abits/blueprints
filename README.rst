@@ -44,3 +44,13 @@ Drupal install
   Db name: drupal
   Db username: drupal
   Db password: drupal
+
+Puppet konfiguriert den Server - aber nicht den Quellcode.  Um Drupal 8 in das
+Verzeichnis ``www/`` zu installieren, kommt ``fabric`` zum Einsatz:
+
+.. code:: bash
+  
+  fab bootstrap_drupal
+
+*Achtung*: Dateien und Verzeichnisse in www/ wird ggf. überschrieben.
+Fabric ist auf den meisten Distributionen als Paket verfügbar.
