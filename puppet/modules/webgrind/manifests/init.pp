@@ -33,4 +33,13 @@ class webgrind {
     group   => 'vagrant',
   }
 
+  file { '/etc/apache2/sites-enabled/40-www.webgrind.vbox.local.conf':
+    ensure  => 'present',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '644',
+    source  => 'puppet:///modules/webgrind/webgrind.vhost',
+    notify  => Service['httpd'],
+  }
+
 }
