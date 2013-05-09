@@ -74,9 +74,15 @@ sofern die Datei ``/etc/hosts`` entsprechend konfiguriert ist.
 Symfony install
 ---------------
 
-Aber ich möchte Symfony! Kein Problem.  Puppetseitig ist der Schalter in der
-Datei ``puppet/manifests/default.pp``.  Finde die Deklaration für die Klasse
-``framework`` und  setze den Parameter ``name`` auf ``symfony``; so:
+.. code:: bash
+
+  Db name: symfony
+  Db username: symfony
+  Db password: symfony
+
+*Aber ich möchte Symfony!* Kein Problem.  Für Puppet ist der Schalter dafür in
+der Datei ``puppet/manifests/default.pp``.  Finde die Deklaration für die
+Klasse ``framework`` und  setze den Parameter ``name`` auf ``symfony``:
 
 .. code:: ruby
 
