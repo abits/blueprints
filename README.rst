@@ -1,8 +1,8 @@
 ==============
-vagrant-drupal
+vagrant-webdev
 ==============
 
-Basic stack for php/drupal development.
+Basic stack for web development.
 
 Setup
 -----
@@ -12,7 +12,11 @@ Setup
   git clone 'repo'
   git submodule init
   git submodule update
+  sudo ./ip-up.sh
+  sudo ./start-nfs.sh
   vagrant up
+
+Die beiden Shell-Skripte konfigurieren den Netzwerkadapter und den nfs-Server beim Host.  
 
 vhosts
 ------
