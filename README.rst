@@ -65,6 +65,13 @@ zum Einsatz:
   
   $ fab bootstrap_drupal
 
+Als default kommt der letzte Release (8). Alternative Versionen können als
+Parameter übergeben werden, z.B.:
+
+.. code:: bash
+
+  $ fab bootstrap_drupal:version=7.22
+
 *Achtung*: Dateien und Verzeichnisse in www/ wird ggf. überschrieben. Fabric
 ist auf den meisten Distributionen als Paket verfügbar.  Eine Liste von
 ausführbaren Tasks erhält man mit ``fab -l``.  Fabric muss immer in dem
@@ -97,6 +104,12 @@ Das ``fabfile.py`` hält auch für Symfony einen Task vor:
 .. code:: bash
 
   $ fab bootstrap_symfony
+
+Eine spezielle Version kann angefordert werden z.B. mit:
+
+.. code:: bash
+  
+  $ fab bootstrap_symfony:version=2.2.0
 
 Dieser Task führt eine Symfony-Installation mit ``composer`` remote in der
 Virtuellen Maschine durch.  Danach ist die Site ansprechbar unter

@@ -32,7 +32,7 @@ class frameworks( $name, $dbms, $webserver ) {
         notify  => Service['httpd'],
       }
 
-        info("Getting ready for Drupal 8.  If successful you may want to bootstrap using: fab bootstrap_drupal")
+        info("Getting ready for Drupal.  If successful you may bootstrap: fab bootstrap_drupal")
 
     }
 
@@ -51,7 +51,7 @@ class frameworks( $name, $dbms, $webserver ) {
           notify  => Service['httpd'],
         }
 
-        info("Getting ready for Symfony 2.  If successful you may want to bootstrap using: fab bootstrap_symfony")
+        info("Getting ready for Symfony.  If successful you may bootstrap: fab bootstrap_symfony")
     }
 
     if $dbms == 'mysql' {

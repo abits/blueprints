@@ -16,12 +16,15 @@ env.password = 'vagrant'
 
 
 @task
-def bootstrap_drupal():
+def bootstrap_drupal(version = '8'):
     ''' Download and install Drupal.'''
 
-    version = 8
-    filename = '%s-%s.x-dev' % ('drupal', version)
+    if version == '8':    
+        filename = '%s-%s.x-dev' % ('drupal', version)
+    else:
+        filename = '%s-%s' % ('drupal', version)
     tarname = filename + '.tar.gz'
+    print tarname
     base_url = 'http://ftp.drupal.org/files/projects/'
     url = base_url + tarname
     download_framework(url, tarname)
@@ -33,12 +36,12 @@ def bootstrap_drupal():
 
 @task
 @hosts(vm)
-def bootstrap_symfony():
+def bootstrap_symfony(version = '2.2.1'):
     '''Download and install Symfony.'''
 
     target = os.path.join('/vagrant', source_dir)
     clean_dir(source_dir)
-    install_cmd = 'composer create-project symfony/framework-standard-edition %s/ 2.2.1' % target
+    install_cmd = 'composer create-project symfony/framework-standard-edition %s/ %s' % (target, version)
     run(install_cmd)
 
 
