@@ -37,6 +37,7 @@ def bootstrap_symfony():
     '''Download and install Symfony.'''
 
     target = os.path.join('/vagrant', source_dir)
+    clean_dir(source_dir)
     install_cmd = 'composer create-project symfony/framework-standard-edition %s/ 2.2.1' % target
     run(install_cmd)
 
@@ -57,6 +58,13 @@ def install_framework(filename):
         shutil.move(src, target)
 
 
+def clean_dir(target):
+    for item in os.listdir(target):
+        try:
+            os.unlink(os.path.join(target, item))
+        except Exception, e:
+            print e
+
 @task        
 def ip_up():
     '''Configure host network adapter for host_only communication.'''
@@ -67,7 +75,7 @@ def ip_up():
 
 @task
 def start_nfs():
-    '''Make sure nfs services are running (tested with Arch, your mileage may vary).'''
+    '''Make sure nfs services are running (your mileage may vary).'''
 
     local('sudo systemctl restart rpc-idmapd')
     local('sudo systemctl restart rpc-mountd')
