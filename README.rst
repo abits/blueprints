@@ -12,8 +12,8 @@ Setup
   $ git submodule init
   $ git submodule update
   $ fab start_nfs
-  $ vagrant up
   $ fab ip_up
+  $ vagrant up
 
 Die beiden `Fabric <http://docs.fabfile.org/>`_ tasks ``fab <TASK>``
 konfigurieren den Netzwerkadapter und den nfs-Server beim Host unter Arch
