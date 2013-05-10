@@ -19,14 +19,16 @@ Die beiden `Fabric <http://docs.fabfile.org/>`_ tasks ``fab <TASK>``
 konfigurieren den Netzwerkadapter und den nfs-Server beim Host unter Arch
 Linux.  Damit *shared folder* mit nfs funktioniert, muss auf dem Host ein nfs-
 server laufen. Unter Arch (und wahrscheinlich Fedora) reicht es dazu, das
-Paket ``nfs- utils`` zu installieren und die Daemons über das Skript zu
+Paket ``nfs-utils`` zu installieren und die Daemons über das Skript zu
 starten. Weitere Infos für
 `Fedora <https://fedoraproject.org/wiki/Archive:Docs/Drafts/Administration Guide/Servers/NetworkFileSystem>`_ 
 und für  
 `Ubuntu <https://help.ubuntu.com/community/SettingUpNFSHowTo>`_. 
 Im Host interessiert nur der Server-Part; Vagrant übernimmt die Konfiguration
 beim Hochfahren und benutzt  dafür ``sudo``; außer dem Starten der nötigen
-Daemons (rpc und idmapd) sollte im Host nichts weiter zu tun sein.
+Daemons (rpc und idmapd) sollte im Host nichts weiter zu tun sein.  
+Im Guest muss für nfs nichts mehr eingestellt werden, wenn die wheezy64 Box 
+verwendet wird.
 
 vhosts
 ------
