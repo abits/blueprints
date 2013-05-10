@@ -3,11 +3,18 @@
 #
 class frameworks( $name, $dbms, $webserver ) {
 
+    @file { '/srv/www':
+      ensure => 'directory',
+      owner  => 'vagrant',
+      group  => 'vagrant',
+      mode   => '644',
+    }
+
+    realize File['/srv/www']
+
     if $name == 'drupal' or $name == 'symfony' {
       class { 'php_dev': }
     }
-
-
 
     if $name == 'drupal' {
 
@@ -24,6 +31,9 @@ class frameworks( $name, $dbms, $webserver ) {
         source  => 'puppet:///modules/frameworks/drupal8.vhost',
         notify  => Service['httpd'],
       }
+
+        info("Getting ready for Drupal 8.  If successful you may want to bootstrap using: fab bootstrap_drupal")
+
     }
 
     if $name == 'symfony' {
@@ -41,6 +51,7 @@ class frameworks( $name, $dbms, $webserver ) {
           notify  => Service['httpd'],
         }
 
+        info("Getting ready for Symfony 2.  If successful you may want to bootstrap using: fab bootstrap_symfony")
     }
 
     if $dbms == 'mysql' {
