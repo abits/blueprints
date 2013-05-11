@@ -23,6 +23,7 @@ class dev_tools {
                 ncftp,
                 screen,
                 p7zip-full,
+                unzip,
                 imagemagick,
                 diffutils,
                 colordiff,
@@ -41,7 +42,7 @@ class dev_tools {
                 gnupg2,
                 sysstat,
                 strace, ]:
-        ensure  => present,
+        ensure  => latest,
     }
 
     file { '/etc/nanorc':

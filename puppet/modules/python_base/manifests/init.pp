@@ -8,7 +8,7 @@ class python_base {
                 python-dev,
                 python-docutils,
                 python-sphinx, ]:
-        ensure => installed,
+        ensure => 'latest',
     }
 
     file { '/usr/local/bin':

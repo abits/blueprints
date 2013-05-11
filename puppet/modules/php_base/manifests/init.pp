@@ -1,7 +1,7 @@
-# Class: php_dev
+# Class: php_base
 # Install php and php dev tools.
 
-class php_dev {
+class php_base {
 
     package { 
       [php5,
@@ -19,6 +19,7 @@ class php_dev {
        php5-xsl, 
        graphviz, ]:
       notify  => Service['httpd'],
+      ensure  => 'latest',
     }
 
     file { '/etc/php5/conf.d/xxx-custom.ini':
@@ -26,7 +27,7 @@ class php_dev {
         owner   => root,
         group   => root,
         mode    => 644,
-        source  => 'puppet:///modules/php_dev/php.ini',
+        source  => 'puppet:///modules/php_base/php.ini',
         notify  => Service['httpd'],
         require => Package['php5'],
     }

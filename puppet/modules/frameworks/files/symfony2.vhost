@@ -1,9 +1,9 @@
 <VirtualHost *:80>
-    DocumentRoot /srv/www/symfony/web
-    ServerName www.symfony.vbox.local
-    ServerAlias symfony.vbox.local
+    DocumentRoot /srv/www/web
+    ServerName www.vbox.local
+    ServerAlias vbox.local
 
-    <Directory /srv/www/symfony/web>
+    <Directory /srv/www/web>
         AllowOverride None
         Options FollowSymLinks
  

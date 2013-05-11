@@ -24,14 +24,31 @@ def bootstrap_drupal(version = '8'):
     else:
         filename = '%s-%s' % ('drupal', version)
     tarname = filename + '.tar.gz'
-    print tarname
     base_url = 'http://ftp.drupal.org/files/projects/'
     url = base_url + tarname
-    download_framework(url, tarname)
-    deflate_framework(tarname)
-    install_framework(filename)
-    os.unlink(tarname)
-    shutil.rmtree(filename)
+    install_from_url(url, tarname, filename)
+
+
+@task
+def bootstrap_typo3(version = '6.1.0'):
+    ''' Download and install Typo3.'''
+
+    filename = '%s-%s' % ('blankpackage', version)
+    tarname = filename + '.tar.gz'
+    base_url = 'http://prdownloads.sourceforge.net/typo3/'
+    url = base_url + tarname + '?download'
+    install_from_url(url, tarname, filename)
+
+
+@task
+def bootstrap_wordpress():
+    ''' Download and install Wordpress.'''
+
+    filename = 'wordpress'
+    tarname = 'latest.tar.gz'
+    base_url = 'http://wordpress.org/'
+    url = base_url + tarname
+    install_from_url(url, tarname, filename)
 
 
 @task
@@ -43,6 +60,43 @@ def bootstrap_symfony(version = '2.2.1'):
     clean_dir(source_dir)
     install_cmd = 'composer create-project symfony/framework-standard-edition %s/ %s' % (target, version)
     run(install_cmd)
+
+
+@task
+@hosts(vm)
+def bootstrap_django():
+    '''Download and install Django.'''
+    
+    setup_python_venv('django')
+    act_in_venv = 'source /vagrant/www/venv/bin/activate'
+    with cd('/vagrant/www'):
+        with prefix(act_in_venv):
+            run('pip install Django')
+            run('pip install south')
+
+
+@hosts(vm)
+def setup_python_venv(name):
+    with cd('/vagrant/www'):
+        cmd = 'virtualenv --distribute --prompt="(%s) ~ " venv' % name 
+        run(cmd)
+
+
+@task
+@hosts(vm)
+def django_server():
+    act_in_venv = 'source /vagrant/www/venv/bin/activate'
+    with cd('/vagrant/www'):
+        with prefix(act_in_venv):
+            run('venv/bin/python manage.py runserver 0.0.0.0:8000')
+
+
+def install_from_url(url, tarname, filename):
+    download_framework(url, tarname)
+    deflate_framework(tarname)
+    install_framework(filename)
+    os.unlink(tarname)
+    shutil.rmtree(filename)
 
 
 def download_framework(url, target):

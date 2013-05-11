@@ -3,81 +3,54 @@
 #
 class frameworks( $name, $dbms, $webserver ) {
 
-    @file { '/srv/www':
-      ensure => 'directory',
-      owner  => 'vagrant',
-      group  => 'vagrant',
-      mode   => '644',
+    file { '/srv/www/':
+       ensure => 'link',
+       target => '/vagrant/www',
+       force => 'true',
     }
 
-    realize File['/srv/www']
-
     if $name == 'drupal' or $name == 'symfony' {
-      class { 'php_dev': }
+        class { 'php_base': }
+        class { 'webgrind': }
+    }
+
+    if $name == 'django' or $name == 'flask' {
+        class { 'python_base': }      
     }
 
     if $name == 'drupal' {
-
-      file { '/srv/www/drupal':
-         ensure => 'link',
-         target => '/vagrant/www',
-      }
-
-      file { '/etc/apache2/sites-enabled/10-www.drupal.vbox.local.conf':
-        ensure  => 'present',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '644',
-        source  => 'puppet:///modules/frameworks/drupal8.vhost',
-        notify  => Service['httpd'],
-      }
-
-        info("Getting ready for Drupal.  If successful you may bootstrap: fab bootstrap_drupal")
-
+        class { 'drupal': }
+        info("Getting ready for Drupal.")
     }
 
     if $name == 'symfony' {
-        file { '/srv/www/symfony':
-           ensure => 'link',
-           target => '/vagrant/www',
-        }
+        class { 'symfony': }
+        info("Getting ready for Symfony.")
+    }
 
-        file { '/etc/apache2/sites-enabled/10-www.symfony.vbox.local.conf':
-          ensure  => 'present',
-          owner   => 'root',
-          group   => 'root',
-          mode    => '644',
-          source  => 'puppet:///modules/frameworks/symfony2.vhost',
-          notify  => Service['httpd'],
-        }
-
-        info("Getting ready for Symfony.  If successful you may bootstrap: fab bootstrap_symfony")
+    if $name == 'django' {
+        class { 'django': }
+        info("Getting ready for Django.")
     }
 
     if $dbms == 'mysql' {
-
       class { 'mysql': }
-
       class { 'mysql::server':
           config_hash => { 
               root_password => 'password',
               bind_address => '0.0.0.0'
           }
       }
-
       mysql::db { $name:
         user     => $name,
         password => $name,
         host     => 'localhost',
         grant    => ['all'],
       }
-
       class { 'phpmyadmin': }
-
     }
 
     if $webserver == 'apache' {
-
       class {'apache': }
       apache::mod { 'alias': }
       apache::mod { 'autoindex': }
@@ -91,7 +64,6 @@ class frameworks( $name, $dbms, $webserver ) {
       apache::mod { 'rewrite': }
       apache::mod { 'setenvif': }
       apache::mod { 'status': }
-
       file { '/etc/apache2/envvars':
           ensure => file,
           source => ['/vagrant/puppet/files/envvars',],
@@ -100,18 +72,15 @@ class frameworks( $name, $dbms, $webserver ) {
           mode   => 644,
           notify => Service['httpd'],
       }
-
       file { '/var/lock/apache2':
           ensure => 'directory',
           owner  => 'vagrant',
           group  => 'vagrant',
           mode   => 755,
       }
-
       if $name == 'drupal' or $name == 'symfony' {
         class { 'apache::mod::php': }
       }
-
     }
 
 }

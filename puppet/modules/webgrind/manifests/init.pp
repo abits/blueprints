@@ -3,8 +3,6 @@
 #
 class webgrind {
 
-  realize File['/srv/www']
-
   exec {'download_webgrind':
       cwd     => '/root',
       command => 'curl -O http://webgrind.googlecode.com/files/webgrind-release-1.0.zip',
@@ -18,18 +16,18 @@ class webgrind {
       command => 'unzip /root/webgrind-release-1.0.zip',
       creates => '/root/webgrind',
       path    => '/usr/local/bin/:/bin/:/usr/bin/',  
-      require => Exec['download_webgrind'],  
+      require => [ Exec['download_webgrind'], Package['unzip'] ],  
   }
 
   exec {'install_webgrind':
       cwd     => '/root',
-      command => 'mv /root/webgrind /srv/www/webgrind',
-      creates => '/srv/www/webgrind',
+      command => 'mv /root/webgrind /srv/webgrind',
+      creates => '/srv/webgrind',
       path    => '/usr/local/bin/:/bin/:/usr/bin/',  
-      require => [ Exec['deflate_webgrind'], File['/srv/www'] ],
+      require => [ Exec['deflate_webgrind'] ],
   }
 
-  file {'/srv/www/webgrind':
+  file {'/srv/webgrind':
     ensure  => 'directory',
     owner   => 'vagrant',
     group   => 'vagrant',

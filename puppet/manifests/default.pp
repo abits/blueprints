@@ -9,7 +9,7 @@ exec { 'apt_update':
 
 # set up a framework, use drupal or symfony as value for $type
 class { 'frameworks': 
-    name      => 'symfony',
+    name      => 'drupal',
     dbms      => 'mysql',
     webserver => 'apache',
 }
@@ -19,5 +19,3 @@ class { 'mailcatcher': }
 class { 'dev_tools': }
 class { 'zsh': }
 
-#class { 'python_base': }
-class { 'webgrind': }
