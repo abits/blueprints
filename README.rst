@@ -20,7 +20,7 @@ dependencies.
 
 .. code::
 
-  $ git clone 'repo'
+  $ git clone <repo>
   $ git submodule init
   $ git submodule update
 
