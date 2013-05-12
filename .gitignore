@@ -1,5 +1,6 @@
 .vagrant
 www/*
+www.*/
 *~
 *.sublime-project
 *.sublime-workspace

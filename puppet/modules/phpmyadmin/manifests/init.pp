@@ -19,12 +19,12 @@ class phpmyadmin {
         mode   => '0444',    
     }
 
-    file { 'phpmyadmin_alias':
+    file { 'phpmyadmin_vhost':
         ensure  => 'present',
         path    => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
-        source  => '/etc/phpmyadmin/apache.conf',
+        source  => 'puppet:///modules/phpmyadmin/phpmyadmin.vhost',
         require => Package['phpmyadmin'],
-        notify  => Service['apache2'],
+        notify  => Service['apache2'],  
         owner  => 'root',
         group  => 'root',
         mode   => '0444',   

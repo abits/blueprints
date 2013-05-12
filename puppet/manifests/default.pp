@@ -7,14 +7,14 @@ exec { 'apt_update':
     path    => '/usr/local/bin/:/bin/:/usr/bin/',  
 }
 
-# set up a framework, use drupal or symfony as value for $type
+# set up a framework, use 'drupal' or 'symfony' as value for framework
 class { 'frameworks': 
-    name      => 'drupal',
+    framework => 'drupal',
     dbms      => 'mysql',
     webserver => 'apache',
 }
 
-# set up tools
+# set up generic tools
 class { 'mailcatcher': }
 class { 'dev_tools': }
 class { 'zsh': }

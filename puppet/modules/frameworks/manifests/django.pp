@@ -1,4 +1,4 @@
-class django {
+class frameworks::django {
 
     file { '/srv/www/django':
        ensure => 'link',
@@ -13,6 +13,12 @@ class django {
     file { '/srv/www/drupal':
        ensure => 'absent',
        target => '/vagrant/www',
+    }
+
+    file { '/vagrant/fabfile.py':
+       ensure  => 'present',
+       replace => "no",
+       source  => 'puppet:///modules/frameworks/django.fabfile',
     }
 
 }
