@@ -1,0 +1,80 @@
+# Fabfile for bootstrapping frameworks and utility tasks.
+
+from fabric.operations import *
+from fabric.api import *
+from fabric.utils import *
+import urllib, os, time
+
+timestamp = int(time.time())
+source_dir = 'www'
+vm = '33.33.33.10'
+env.hosts = [vm, 'localhost']
+env.user = 'vagrant'
+env.password = 'vagrant'
+
+
+@task
+@hosts(vm)
+def bootstrap():
+    '''Download and install Django.'''
+    
+    pre_bootstrap()
+    setup_venv('django')
+    act_in_venv = 'source /vagrant/www/venv/bin/activate'
+    with cd('/vagrant/www'):
+        with prefix(act_in_venv):
+            run('pip install Django')
+            run('pip install south')
+            run('pip freeze -l >! requirements.txt')
+
+
+@task
+@hosts(vm)
+def dev_server():
+    '''Run remote development server.'''
+
+    act_in_venv = 'source /vagrant/www/venv/bin/activate'
+    with cd('/vagrant/www'):
+        with prefix(act_in_venv):
+            run('venv/bin/python manage.py runserver 0.0.0.0:8000')
+
+
+@hosts(vm)
+def setup_venv(name):
+    with cd('/vagrant/www'):
+        cmd = 'virtualenv --distribute --prompt="(%s) ~ " venv' % name 
+        run(cmd)
+
+
+# generic stuff, 
+# TODO: this should go in a template
+@task
+@hosts('localhost')
+def ip():
+    '''Configure host network adapter for host_only communication.'''
+
+    local('sudo ip link set vboxnet0 up')
+    local('sudo ip addr add 33.33.33.1/24 dev vboxnet0')
+
+
+@task
+@hosts('localhost')
+def nfs(cmd='start'):
+    '''Manage nfs services (your mileage may vary).'''
+
+    if cmd == 'start':
+        local('sudo systemctl restart rpc-idmapd')
+        local('sudo systemctl restart rpc-mountd')
+    elif cmd == 'stop':
+        local('sudo systemctl stop rpc-idmapd')
+        local('sudo systemctl stop rpc-mountd')
+
+
+@hosts('localhost')
+def pre_bootstrap():
+    if os.path.exists(source_dir):
+        backup_target = '%s.%d' % (source_dir, timestamp)
+        msg = 'Backing up present source directory %s to %s' % (source_dir, backup_target)
+        warn(msg)
+        os.rename(source_dir, backup_target)
+    os.makedirs(source_dir)

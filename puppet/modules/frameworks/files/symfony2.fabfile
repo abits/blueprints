@@ -1,0 +1,57 @@
+# Fabfile for bootstrapping frameworks and utility tasks.
+
+from fabric.operations import *
+from fabric.api import *
+import urllib, os, time
+
+timestamp = int(time.time())
+source_dir = 'www'
+vm = '33.33.33.10'
+env.hosts = [vm, 'localhost']
+env.user = 'vagrant'
+env.password = 'vagrant'
+
+
+@task
+@hosts(vm)
+def bootstrap(version = '2.2.1'):
+    '''Download and install Symfony.'''
+
+    pre_bootstrap()
+    target = os.path.join('/vagrant', source_dir)
+    install_cmd = 'composer create-project symfony/framework-standard-edition %s/ %s' % (target, version)
+    run(install_cmd)
+
+
+# generic stuff, 
+# TODO: this should go in a template
+@task
+@hosts('localhost')
+def ip():
+    '''Configure host network adapter for host_only communication.'''
+
+    local('sudo ip link set vboxnet0 up')
+    local('sudo ip addr add 33.33.33.1/24 dev vboxnet0')
+
+
+@task
+@hosts('localhost')
+def nfs(cmd='start'):
+    '''Manage nfs services (your mileage may vary).'''
+
+    if cmd == 'start':
+        local('sudo systemctl restart rpc-idmapd')
+        local('sudo systemctl restart rpc-mountd')
+    elif cmd == 'stop':
+        local('sudo systemctl stop rpc-idmapd')
+        local('sudo systemctl stop rpc-mountd')
+
+
+@hosts('localhost')
+def pre_bootstrap():
+    if os.path.exists(source_dir):
+        backup_target = '%s.%d' % (source_dir, timestamp)
+        msg = 'Backing up present source directory %s to %s' % (source_dir, backup_target)
+        warn(msg)
+        os.rename(source_dir, backup_target)
+    os.makedirs(source_dir)

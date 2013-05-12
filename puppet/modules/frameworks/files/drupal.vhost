@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+    ServerName  www.vbox.local
+    ServerAlias vbox.local
+    DocumentRoot /srv/www
+    <Directory "/srv/www">
+        Options FollowSymLinks
+        AllowOverride All
+    </Directory>
+</VirtualHost>
