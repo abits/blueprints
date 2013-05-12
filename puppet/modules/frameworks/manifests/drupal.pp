@@ -13,6 +13,8 @@ class frameworks::drupal {
        ensure  => 'present',
        replace => "no",
        source  => 'puppet:///modules/frameworks/drupal.fabfile',
+       owner   => 'vagrant',
+       group   => 'users',
     }
     
 }

@@ -13,5 +13,7 @@ class frameworks::symfony {
        ensure  => 'present',
        replace => "no",
        source  => 'puppet:///modules/frameworks/symfony.fabfile',
+       owner   => 'vagrant',
+       group   => 'users',
     } 
 }

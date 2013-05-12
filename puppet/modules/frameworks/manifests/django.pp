@@ -19,6 +19,8 @@ class frameworks::django {
        ensure  => 'present',
        replace => "no",
        source  => 'puppet:///modules/frameworks/django.fabfile',
+       owner   => 'vagrant',
+       group   => 'users',
     }
 
 }

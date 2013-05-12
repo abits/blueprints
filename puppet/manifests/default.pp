@@ -7,6 +7,11 @@ exec { 'apt_update':
     path    => '/usr/local/bin/:/bin/:/usr/bin/',  
 }
 
+# don't need no firewall on a virtual dev server
+class { 'firewall': 
+  ensure => 'stopped'
+}
+
 # set up a framework, use 'drupal' or 'symfony' as value for framework
 class { 'frameworks': 
     framework => 'drupal',
