@@ -150,4 +150,4 @@ Symfony does not allow remote access to the development dispatcher by default.  
 ``www/web/app_dev.php`` to change this.  
 
 Install Drupal online by visiting <http://www.vbox.local/install.php> or 
-<33.33.33.10/install.php>.
+<http://33.33.33.10/install.php>.
