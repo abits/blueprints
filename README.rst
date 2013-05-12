@@ -98,7 +98,7 @@ some addresses in your host's ``/etc/hosts``:
   33.33.33.10   phpmyadmin.vbox.local
   33.33.33.10   webgrind.vbox.local
 
-Webgrind is a xdebug profiler frontend which is only added for PHP projects.
+Webgrind is an xdebug profiler frontend which is only added for PHP projects.
 
 Databases
 ---------
