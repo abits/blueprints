@@ -1,10 +1,11 @@
+WSGIPythonPath /srv/www/:/srv/www/venv/lib/python2.7/site-packages
+
 <VirtualHost *:80>
     ServerName  www.vbox.local
     ServerAlias vbox.local
-    WSGIScriptAlias / /srv/www/mysite/wsgi.py
-    WSGIPythonPath /srv/www/:/srv/www/venv/lib/python2.X/site-packages
+    WSGIScriptAlias / /srv/www/app/wsgi.py
 
-    <Directory /srv/www/mysite>
+    <Directory /srv/www/app>
         <Files wsgi.py>
             Order deny,allow
             Allow from all

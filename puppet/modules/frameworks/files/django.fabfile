@@ -7,6 +7,7 @@ import urllib, os, time
 
 timestamp = int(time.time())
 source_dir = 'www'
+app_name = 'app'
 vm = '33.33.33.10'
 env.hosts = [vm, 'localhost']
 env.user = 'vagrant'
@@ -15,9 +16,9 @@ env.password = 'vagrant'
 
 @task
 @hosts(vm)
-def bootstrap():
+def bootstrap(name=app_name):
     '''Download and install Django.'''
-    
+
     pre_bootstrap()
     setup_venv('django')
     act_in_venv = 'source /vagrant/www/venv/bin/activate'
@@ -25,7 +26,15 @@ def bootstrap():
         with prefix(act_in_venv):
             run('pip install Django')
             run('pip install south')
-            run('pip freeze -l >! requirements.txt')
+            run('pip freeze -l > requirements.txt')
+            create_cmd = 'django-admin.py startproject %s' % name
+            run(create_cmd)
+        mv_cmd = 'mv %s %s_1' % (name, name)
+        run(mv_cmd)
+        mv_cmd = 'mv %s_1/* /vagrant/www' % name
+        run(mv_cmd)
+        rm_cmd = 'rmdir %s_1' % (name)
+        run(rm_cmd)
 
 
 @task

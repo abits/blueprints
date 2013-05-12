@@ -14,7 +14,7 @@ class { 'firewall':
 
 # set up a framework, use 'drupal' or 'symfony' as value for framework
 class { 'frameworks': 
-    framework => 'drupal',
+    framework => 'django',
     dbms      => 'mysql',
     webserver => 'apache',
 }

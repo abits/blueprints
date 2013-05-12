@@ -29,4 +29,7 @@ class web_apache( $framework ) {
       if $framework == 'drupal' or $framework == 'symfony' {
         class { 'apache::mod::php': }
       }
+      elsif $framework == 'django' {
+        apache::mod { 'wsgi': }
+      }
 }
