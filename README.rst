@@ -18,7 +18,7 @@ How to use
 Clone this repo in a directory of your choosing.  Initialize and clone
 dependencies.
 
-.. code:: bash
+.. code::
 
   $ git clone 'repo'
   $ git submodule init
@@ -37,7 +37,7 @@ to one of ``drupal``, ``symfony``, or ``django``.
 
 Then run 
 
-.. code:: bash
+.. code::
 
   $ vagrant up
 
@@ -59,13 +59,15 @@ machine via NFS.  This requires that you've got a NFS server running on the
 host machine.  I've only tested this under Arch Linux where I only needed to 
 install the package ``nfs-utils`` and start the servers with:
 
-.. code:: bash
+.. code::
 
   # systemctl restart rpc-idmapd
   # systemctl restart rpc-mountd
 
 Make sure your host network adapter is properly configured for host only
 communication (again, under Arch Linux):
+
+.. code::
 
   # ip link set vboxnet0 up
   # ip addr add 33.33.33.1/24 dev vboxnet0
@@ -90,7 +92,7 @@ You will then need to sync your folders manually over SSH.
 The virtual machine has the IP ``33.33.33.10``.  Add some comfort by defining
 some addresses in your host's ``/etc/hosts``:
 
-.. code:: bash
+.. code::
 
   33.33.33.10   www.vbox.local
   33.33.33.10   phpmyadmin.vbox.local
@@ -103,7 +105,7 @@ Databases
 
 Puppet configures default databases, which can be used by your projects:
 
-.. code:: bash
+.. code::
 
   Db name: <framework>
   Db username: <framework>
@@ -113,7 +115,7 @@ E.g. for Drupal you'll find a mysql database of the name ``drupal`` accessible
 for a user ``drupal`` authenticated with password ``drupal``.
 You can manage mysql databases with `PhpMyAdmin <phpmyadmin.vbox.local>`_ with:
 
-.. code:: bash
+.. code::
 
   User: root
   Password: password
@@ -136,14 +138,14 @@ exist.  So you can later savely modify and extend it as part of your project.
 
 Install the framework of your choice with:
 
-.. code:: bash
+.. code::
   
   $ fab bootstrap
 
 This downloads and installs the necessary code into ``www/``.  You can specify
 certain versions of Drupal or Symfony by adding a parameter, like so:
 
-.. code:: bash
+.. code::
 
   $ fab bootstrap:version=7.22
   $ fab bootstrap:version=2.2.0
