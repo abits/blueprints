@@ -89,7 +89,7 @@ If you don't want nfs, just comment out the following line in the ``Vagrantfile`
 
 You will then need to sync your folders manually over SSH.
 
-The virtual machine has the IP ``33.33.33.10``.  Add some comfort by defining
+The virtual machine has the IP ``33.33.33.10``.  Add comfort by defining
 some addresses in your host's ``/etc/hosts``:
 
 .. code::
