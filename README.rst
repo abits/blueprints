@@ -44,16 +44,6 @@ Then run
 This should set up a virtual machine for the desired framework, e.g. a basic
 LAMP stack with default virtual host and databases plus a set of dev tools.
 
-
-Finde die Deklaration für die
-Klasse ``framework`` und  setze den Parameter ``name`` auf ``symfony``:
-
-.. code:: ruby
-
-  class { 'frameworks': 
-      name => 'symfony',
-  }
-
 Per default Vagrant will try to mount your project folder in the virtual
 machine via NFS.  This requires that you've got a NFS server running on the
 host machine.  I've only tested this under Arch Linux where I only needed to 
@@ -81,7 +71,7 @@ Puppet will install a ``fabfile.py`` in your project folder with some tasks
 ready to bootstrap your framework.  It should also contain task which do the
 host configuration above.
 
-If you don't want nfs, just comment out the following line in the ``Vagrantfile``:
+If you don't want NFS, just comment out the following line in the ``Vagrantfile``:
 
 .. code:: ruby
 
@@ -98,7 +88,7 @@ some addresses in your host's ``/etc/hosts``:
   33.33.33.10   phpmyadmin.vbox.local
   33.33.33.10   webgrind.vbox.local
 
-Webgrind is an xdebug profiler frontend which is only added for PHP projects.
+Webgrind is an Xdebug profiler web front-end which is only added for PHP projects.
 
 Databases
 ---------
@@ -111,9 +101,9 @@ Puppet configures default databases, which can be used by your projects:
   Db username: <framework>
   Db password: <framework>
 
-E.g. for Drupal you'll find a mysql database of the name ``drupal`` accessible
-for a user ``drupal`` authenticated with password ``drupal``.
-You can manage mysql databases with `PhpMyAdmin <phpmyadmin.vbox.local>`_ with:
+E.g. for Drupal you'll find a MySQL database of the name "drupal" accessible
+for a user "drupal" authenticated with password "drupal".
+You can manage MySQL databases with `PhpMyAdmin <phpmyadmin.vbox.local>`_ with:
 
 .. code::
 
@@ -121,7 +111,7 @@ You can manage mysql databases with `PhpMyAdmin <phpmyadmin.vbox.local>`_ with:
   Password: password
 
 
-Boostrapping
+Bootstrapping
 ------------
 
 While Vagrant manages the VM and Puppet sets up tools, web and database
@@ -134,7 +124,7 @@ fabric finds such a directory while bootstrapping, it will back it up.
 
 See what your shining new ``fabfile.py`` has to offer by running ``fab -l`` in
 the directory where ``fabfile.py`` is; this file is only created if it doesn't
-exist.  So you can later savely modify and extend it as part of your project.
+exist.  So you can later safely modify and extend it as part of your project.
 
 Install the framework of your choice with:
 
@@ -156,7 +146,7 @@ You will hit the wall, if fabric can't find that version.
 What now?
 ---------
 
-Symfony does not allow remote acces to the dev dispatcher by default.  Modify 
+Symfony does not allow remote access to the development dispatcher by default.  Modify 
 ``www/web/app_dev.php`` to change this.  
 
 Install Drupal online by visiting <http://www.vbox.local/install.php> or 
