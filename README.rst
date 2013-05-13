@@ -25,7 +25,7 @@ dependencies.
   $ git submodule update
 
 Decide which framework you want to use - it's Drupal, Symfony, and Django for
-now (more to come) - and modify ``puppet/modules/manifest/default.pp``.  Find
+now (more to come) - and modify ``puppet/manifests/default.pp``.  Find
 the declaration of class ``frameworks`` and switch the parameter ``framework``
 to one of ``drupal``, ``symfony``, or ``django``.  
 
