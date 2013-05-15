@@ -54,6 +54,13 @@ install the package ``nfs-utils`` and start the servers with:
   # systemctl restart rpc-idmapd
   # systemctl restart rpc-mountd
 
+.. code on ubuntu::
+
+  # sudo apt-get install nfs-kernel-server
+  # sudo service nfs-kernel-server restart
+  # sudo service idmapd restart
+
+
 Make sure your host network adapter is properly configured for host only
 communication (again, under Arch Linux):
 
