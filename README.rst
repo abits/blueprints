@@ -54,7 +54,9 @@ install the package ``nfs-utils`` and start the servers with:
   # systemctl restart rpc-idmapd
   # systemctl restart rpc-mountd
 
-.. code on ubuntu::
+on ubuntu:
+
+.. code::
 
   # sudo apt-get install nfs-kernel-server
   # sudo service nfs-kernel-server restart
